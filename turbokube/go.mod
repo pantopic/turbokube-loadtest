@@ -1,4 +1,4 @@
-module github.com/pantopic/turbokube/turbokube
+module github.com/pantopic/turbokube-loadtest/turbokube
 
 go 1.25.1
 
