@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-export IP_APISERVER_0=10.0.0.21
-export IP_TURBO=10.0.0.19
+export IP_APISERVER_0=10.0.0.16
+export IP_TURBO=10.0.0.15
 
 mkdir -p /etc/kubernetes/pki/etcd
 scp -o "StrictHostKeyChecking=accept-new" root@$IP_TURBO:/etc/kubernetes/admin.conf /etc/kubernetes/admin.a.conf
@@ -13,8 +13,8 @@ scp -o "StrictHostKeyChecking=accept-new" root@$IP_APISERVER_0:/etc/kubernetes/p
 wget https://go.dev/dl/go1.25.4.linux-amd64.tar.gz
 rm -rf /usr/local/go && tar -C /usr/local -xzf go1.25.4.linux-amd64.tar.gz
 
-git clone https://github.com/pantopic/turbokube.git
-cd turbokube/turboctl
+git clone https://github.com/pantopic/turbokube-loadtest.git
+cd turbokube-loadtest/turboctl
 go build
 
 # ./turboctl run basic -c 4 -n 1024

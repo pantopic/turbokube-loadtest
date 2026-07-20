@@ -2,18 +2,18 @@
 set -e
 
 export APINAME0="apiserver-0"
-# export APINAME1="apiserver-1"
-# export APINAME2="apiserver-2"
-export IP_APISERVER_0=10.0.0.20
-# export IP_APISERVER_1=10.0.0.19
-# export IP_APISERVER_2=10.0.0.18
+export APINAME1="apiserver-1"
+export APINAME2="apiserver-2"
+export IP_APISERVER_0=10.0.0.16
+export IP_APISERVER_1=10.0.0.25
+export IP_APISERVER_2=10.0.0.24
 
 export NAME0="etcd-0"
 export NAME1="etcd-1"
 export NAME2="etcd-2"
-export IP_ETCD_0=10.0.0.4
-export IP_ETCD_1=10.0.0.21
-export IP_ETCD_2=10.0.0.3
+export IP_ETCD_0=10.0.0.19
+export IP_ETCD_1=10.0.0.17
+export IP_ETCD_2=10.0.0.20
 
 export PCB_TLS_CRT=/etc/kubernetes/pki/etcd/server.crt
 export PCB_TLS_KEY=/etc/kubernetes/pki/etcd/server.key
@@ -23,7 +23,7 @@ export PCB_PORT_API=2379
 export PCB_PORT_ZONGZI=2380
 export PCB_HOST_PEERS=${IP_ETCD_0}:${PCB_PORT_ZONGZI},${IP_ETCD_1}:${PCB_PORT_ZONGZI},${IP_ETCD_2}:${PCB_PORT_ZONGZI}
 export PCB_HOST_NAME=${HOST_IP}
-export PCB_HOST_TAGS="pantopic/config-bus=member"
+export PCB_HOST_TAGS="pantopic:turbokube=member"
 
 # leader
 mkdir -p /tmp/${IP_ETCD_0}/ /tmp/${IP_ETCD_1}/ /tmp/${IP_ETCD_2}/ /tmp/${IP_APISERVER_0}/ # /tmp/${IP_APISERVER_1}/ /tmp/${IP_APISERVER_2}/
@@ -78,19 +78,19 @@ kubeadm init phase certs apiserver-etcd-client --config=/tmp/${IP_APISERVER_0}/k
 cp -R /etc/kubernetes/pki /tmp/${IP_APISERVER_0}/
 find /etc/kubernetes/pki -not -name ca.crt -not -name ca.key -type f -delete
 
-# kubeadm init phase certs etcd-server --config=/tmp/${IP_APISERVER_1}/kubeadmcfg.yaml
-# kubeadm init phase certs etcd-peer --config=/tmp/${IP_APISERVER_1}/kubeadmcfg.yaml
-# kubeadm init phase certs etcd-healthcheck-client --config=/tmp/${IP_APISERVER_1}/kubeadmcfg.yaml
-# kubeadm init phase certs apiserver-etcd-client --config=/tmp/${IP_APISERVER_1}/kubeadmcfg.yaml
-# cp -R /etc/kubernetes/pki /tmp/${IP_APISERVER_1}/
-# find /etc/kubernetes/pki -not -name ca.crt -not -name ca.key -type f -delete
+kubeadm init phase certs etcd-server --config=/tmp/${IP_APISERVER_1}/kubeadmcfg.yaml
+kubeadm init phase certs etcd-peer --config=/tmp/${IP_APISERVER_1}/kubeadmcfg.yaml
+kubeadm init phase certs etcd-healthcheck-client --config=/tmp/${IP_APISERVER_1}/kubeadmcfg.yaml
+kubeadm init phase certs apiserver-etcd-client --config=/tmp/${IP_APISERVER_1}/kubeadmcfg.yaml
+cp -R /etc/kubernetes/pki /tmp/${IP_APISERVER_1}/
+find /etc/kubernetes/pki -not -name ca.crt -not -name ca.key -type f -delete
 
-# kubeadm init phase certs etcd-server --config=/tmp/${IP_APISERVER_2}/kubeadmcfg.yaml
-# kubeadm init phase certs etcd-peer --config=/tmp/${IP_APISERVER_2}/kubeadmcfg.yaml
-# kubeadm init phase certs etcd-healthcheck-client --config=/tmp/${IP_APISERVER_2}/kubeadmcfg.yaml
-# kubeadm init phase certs apiserver-etcd-client --config=/tmp/${IP_APISERVER_2}/kubeadmcfg.yaml
-# cp -R /etc/kubernetes/pki /tmp/${IP_APISERVER_2}/
-# find /etc/kubernetes/pki -not -name ca.crt -not -name ca.key -type f -delete
+kubeadm init phase certs etcd-server --config=/tmp/${IP_APISERVER_2}/kubeadmcfg.yaml
+kubeadm init phase certs etcd-peer --config=/tmp/${IP_APISERVER_2}/kubeadmcfg.yaml
+kubeadm init phase certs etcd-healthcheck-client --config=/tmp/${IP_APISERVER_2}/kubeadmcfg.yaml
+kubeadm init phase certs apiserver-etcd-client --config=/tmp/${IP_APISERVER_2}/kubeadmcfg.yaml
+cp -R /etc/kubernetes/pki /tmp/${IP_APISERVER_2}/
+find /etc/kubernetes/pki -not -name ca.crt -not -name ca.key -type f -delete
 
 kubeadm init phase certs etcd-server --config=/tmp/${IP_ETCD_2}/kubeadmcfg.yaml
 kubeadm init phase certs etcd-peer --config=/tmp/${IP_ETCD_2}/kubeadmcfg.yaml
@@ -117,8 +117,8 @@ find /tmp/${IP_ETCD_2} -name ca.key -type f -delete
 find /tmp/${IP_ETCD_1} -name ca.key -type f -delete
 
 scp -o "StrictHostKeyChecking=accept-new" -r /tmp/${IP_APISERVER_0}/* root@${IP_APISERVER_0}:/etc/kubernetes
-# scp -o "StrictHostKeyChecking=accept-new" -r /tmp/${IP_APISERVER_1}/* root@${IP_APISERVER_1}:/etc/kubernetes
-# scp -o "StrictHostKeyChecking=accept-new" -r /tmp/${IP_APISERVER_2}/* root@${IP_APISERVER_2}:/etc/kubernetes
+scp -o "StrictHostKeyChecking=accept-new" -r /tmp/${IP_APISERVER_1}/* root@${IP_APISERVER_1}:/etc/kubernetes
+scp -o "StrictHostKeyChecking=accept-new" -r /tmp/${IP_APISERVER_2}/* root@${IP_APISERVER_2}:/etc/kubernetes
 scp -o "StrictHostKeyChecking=accept-new" -r /tmp/${IP_ETCD_1}/* root@${IP_ETCD_1}:/etc/kubernetes
 scp -o "StrictHostKeyChecking=accept-new" -r /tmp/${IP_ETCD_2}/* root@${IP_ETCD_2}:/etc/kubernetes
 

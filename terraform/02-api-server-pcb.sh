@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 
-export IP_APISERVER_0=10.0.0.20
-export IP_ETCD_0=10.0.0.4
-export IP_ETCD_1=10.0.0.21
-export IP_ETCD_2=10.0.0.3
+export IP_APISERVER_0=10.0.0.16
+export IP_ETCD_0=10.0.0.19
+export IP_ETCD_1=10.0.0.17
+export IP_ETCD_2=10.0.0.20
 export IP_LB=10.0.0.2
 
 export HOST_IP=$(ip addr show dev eth1 | grep 10.0 | tail -n 1 | awk '{print $2}' | sed 's/\/.*//')
@@ -68,21 +68,20 @@ kubeadm init \
   --config /etc/kubernetes/kubeadm-config.conf \
   --upload-certs
 
-
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 
 # followers
-kubeadm join 10.0.0.2:6443 --token 3rto1u.0gjut4leuc6gyts4 \
-        --discovery-token-ca-cert-hash sha256:ecbb545f59f07ebf177346d7969f6961f48017facbcde12c288d1ee9dd16c10e \
-        --control-plane --certificate-key 6f86230dbe3307205104a397930d1ff1d090869d70a3ddcd6784a6adb303e282 \
+  kubeadm join 10.0.0.2:6443 --token 81yyjk.0jgq1pe0ad2e6i5c \
+        --discovery-token-ca-cert-hash sha256:bc20b702a242d514f5c470a1e2053eed477a2607d829e95de13d0e515be20158 \
+        --control-plane --certificate-key 13abafe0341a32b728824682c368ab1859d2a9a5f1edbd094e569089b3c204d1 \
     --apiserver-advertise-address $HOST_IP
 
 sudo systemctl enable configure-nlb
 sudo systemctl start configure-nlb
 
 # metrics
-kubeadm join 10.0.0.2:6443 --token 6qom50.pittqa3vannjlpr7 \
-        --discovery-token-ca-cert-hash sha256:cb2a324eded791db5e9c18d9a22bb480934e665e75f4bc14db906fb0c3dcc33d
+kubeadm join 10.0.0.2:6443 --token 81yyjk.0jgq1pe0ad2e6i5c \
+        --discovery-token-ca-cert-hash sha256:bc20b702a242d514f5c470a1e2053eed477a2607d829e95de13d0e515be20158
 
 wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 sed -i 's/--metric-resolution=15s/--metric-resolution=15s\n        - --kubelet-insecure-tls/' components.yaml

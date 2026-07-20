@@ -1,14 +1,14 @@
-# resource "digitalocean_droplet" "turbo" {
-#   name     = "turbo"
-#   region   = var.region
-#   vpc_uuid = digitalocean_vpc.turbokube.id
-#   tags     = ["turbokube"]
+resource "digitalocean_droplet" "turbo" {
+  name     = "turbo"
+  region   = var.region
+  vpc_uuid = digitalocean_vpc.turbokube.id
+  tags     = ["turbokube"]
 
-#   image     = "ubuntu-24-04-x64"
-#   size      = var.node_class.turbo
-#   ssh_keys  = [var.ssh_key]
-#   user_data = file("setup.sh")
-# }
+  image     = "ubuntu-24-04-x64"
+  size      = var.node_class.turbo
+  ssh_keys  = [var.ssh_key]
+  user_data = file("setup.sh")
+}
 
 # resource "digitalocean_droplet_autoscale" "worker" {
 #   name = "worker"
