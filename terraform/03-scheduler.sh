@@ -9,9 +9,6 @@ set -e
 # Environment="KUBELET_EXTRA_ARGS=--node-labels=pantopic/turbokube=scheduler --register-with-taints=pantopic/turbokube=scheduler:NoSchedule"
 # EOF
 
-kubeadm join 10.0.0.2:6443 --token x37d38.eira0dwtvkhb885w \
-        --discovery-token-ca-cert-hash sha256:5bc6370afd1569ee5e9a1f22ff9007e54464fcf311d694c09f04333e34e5d97e
-
 # Commands to apply taints and labels manually post-hoc
 kubectl taint nodes scheduler-0 pantopic/turbokube=scheduler:NoSchedule
 kubectl label nodes scheduler-0 pantopic/turbokube=scheduler

@@ -4,16 +4,16 @@ set -e
 export APINAME0="apiserver-0"
 export APINAME1="apiserver-1"
 export APINAME2="apiserver-2"
-export IP_APISERVER_0=10.0.0.16
-export IP_APISERVER_1=10.0.0.25
-export IP_APISERVER_2=10.0.0.24
+export IP_APISERVER_0=10.0.0.3
+export IP_APISERVER_1=10.0.0.6
+export IP_APISERVER_2=10.0.0.7
 
 export NAME0="etcd-0"
 export NAME1="etcd-1"
 export NAME2="etcd-2"
-export IP_ETCD_0=10.0.0.19
-export IP_ETCD_1=10.0.0.17
-export IP_ETCD_2=10.0.0.20
+export IP_ETCD_0=10.0.0.2
+export IP_ETCD_1=10.0.0.8
+export IP_ETCD_2=10.0.0.5
 
 export PCB_TLS_CRT=/etc/kubernetes/pki/etcd/server.crt
 export PCB_TLS_KEY=/etc/kubernetes/pki/etcd/server.key
@@ -26,10 +26,10 @@ export PCB_HOST_NAME=${HOST_IP}
 export PCB_HOST_TAGS="pantopic:turbokube=member"
 
 # leader
-mkdir -p /tmp/${IP_ETCD_0}/ /tmp/${IP_ETCD_1}/ /tmp/${IP_ETCD_2}/ /tmp/${IP_APISERVER_0}/ # /tmp/${IP_APISERVER_1}/ /tmp/${IP_APISERVER_2}/
+mkdir -p /tmp/${IP_ETCD_0}/ /tmp/${IP_ETCD_1}/ /tmp/${IP_ETCD_2}/ /tmp/${IP_APISERVER_0}/ /tmp/${IP_APISERVER_1}/ /tmp/${IP_APISERVER_2}/
 
-export HOSTS=(${IP_ETCD_0} ${IP_ETCD_1} ${IP_ETCD_2} ${IP_APISERVER_0}) # ${IP_APISERVER_1} ${IP_APISERVER_2})
-export NAMES=(${NAME0} ${NAME1} ${NAME2} ${APINAME0}) # ${APINAME1} ${APINAME2})
+export HOSTS=(${IP_ETCD_0} ${IP_ETCD_1} ${IP_ETCD_2} ${IP_APISERVER_0} ${IP_APISERVER_1} ${IP_APISERVER_2})
+export NAMES=(${NAME0} ${NAME1} ${NAME2} ${APINAME0} ${APINAME1} ${APINAME2})
 
 for i in "${!HOSTS[@]}"; do
 HOST=${HOSTS[$i]}
@@ -123,6 +123,7 @@ scp -o "StrictHostKeyChecking=accept-new" -r /tmp/${IP_ETCD_1}/* root@${IP_ETCD_
 scp -o "StrictHostKeyChecking=accept-new" -r /tmp/${IP_ETCD_2}/* root@${IP_ETCD_2}:/etc/kubernetes
 
 nohup /usr/bin/pcb &
+tail nohup.out -f
 
 ETCDCTL_API=3 etcdctl \
 --cert /etc/kubernetes/pki/etcd/peer.crt \

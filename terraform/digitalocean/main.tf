@@ -50,26 +50,20 @@ variable "node_max" {
 
 # https://slugs.do-api.dev/
 variable "node_class" {
+  default = {
+    metrics : "s-2vcpu-4gb-intel"
+    apiserver : "s-2vcpu-4gb-intel"
+    etcd : "s-2vcpu-4gb-intel"
+  }
   # default = {
   #   admin : "s-2vcpu-4gb"
-  #   apiserver : "m-8vcpu-64gb-intel"
-  #   etcd : "g-4vcpu-16gb-intel"
+  #   apiserver : "m3-8vcpu-64gb-intel"
+  #   etcd : "so-8vcpu-64gb"
   #   metrics : "g-4vcpu-16gb-intel"
   #   scheduler : "g-4vcpu-16gb-intel"
   #   turbo : "g-4vcpu-16gb-intel"
-  #   worker : "m-2vcpu-16gb-intel"
-  #   apiserver : "s-2vcpu-4gb-intel"
-  #   etcd : "s-2vcpu-4gb-intel"
+  #   worker : "m-2vcpu-16gb"
   # }
-  default = {
-    admin : "s-2vcpu-4gb"
-    apiserver : "m3-8vcpu-64gb-intel"
-    etcd : "so-8vcpu-64gb-intel"
-    metrics : "g-4vcpu-16gb-intel"
-    scheduler : "g-4vcpu-16gb-intel"
-    turbo : "g-4vcpu-16gb-intel"
-    worker : "m-2vcpu-16gb-intel"
-  }
 }
 
 //                                                                      . .---:.::::                                    

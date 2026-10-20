@@ -26,19 +26,19 @@ resource "digitalocean_droplet" "apiserver" {
   user_data = file("setup.sh")
 }
 
-resource "digitalocean_droplet" "scheduler" {
-  count = var.node_count.scheduler
+# resource "digitalocean_droplet" "scheduler" {
+#   count = var.node_count.scheduler
 
-  name     = "scheduler-${count.index}"
-  region   = var.region
-  vpc_uuid = digitalocean_vpc.turbokube.id
-  tags     = ["turbokube"]
+#   name     = "scheduler-${count.index}"
+#   region   = var.region
+#   vpc_uuid = digitalocean_vpc.turbokube.id
+#   tags     = ["turbokube"]
 
-  image     = "ubuntu-24-04-x64"
-  size      = var.node_class.scheduler
-  ssh_keys  = [var.ssh_key]
-  user_data = file("setup.sh")
-}
+#   image     = "ubuntu-24-04-x64"
+#   size      = var.node_class.scheduler
+#   ssh_keys  = [var.ssh_key]
+#   user_data = file("setup.sh")
+# }
 
 resource "digitalocean_droplet" "metrics" {
   name     = "metrics"

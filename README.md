@@ -104,7 +104,7 @@ spec:
             memory: 32Mi
 ```
 
-The balancing logic in the Kubernetes scheduler is driven entirely by resource requests so they are not optional.
+The balancing logic in the Kubernetes scheduler is driven entirely by resource requests so they are _not_ optional.
 
 ### 2. Sequential Scheduling Seems Unavoidable
 

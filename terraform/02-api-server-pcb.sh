@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-export IP_APISERVER_0=10.0.0.16
-export IP_ETCD_0=10.0.0.19
-export IP_ETCD_1=10.0.0.17
-export IP_ETCD_2=10.0.0.20
-export IP_LB=10.0.0.2
+export IP_APISERVER_0=10.0.0.3
+export IP_ETCD_0=10.0.0.2
+export IP_ETCD_1=10.0.0.8
+export IP_ETCD_2=10.0.0.5
+export IP_LB=10.0.0.9
 
 export HOST_IP=$(ip addr show dev eth1 | grep 10.0 | tail -n 1 | awk '{print $2}' | sed 's/\/.*//')
 
@@ -71,17 +71,19 @@ kubeadm init \
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 
 # followers
-  kubeadm join 10.0.0.2:6443 --token 81yyjk.0jgq1pe0ad2e6i5c \
-        --discovery-token-ca-cert-hash sha256:bc20b702a242d514f5c470a1e2053eed477a2607d829e95de13d0e515be20158 \
-        --control-plane --certificate-key 13abafe0341a32b728824682c368ab1859d2a9a5f1edbd094e569089b3c204d1 \
+  kubeadm join 10.0.0.9:6443 --token nhra5m.6x75d239o943tmxi \
+        --discovery-token-ca-cert-hash sha256:4e5b1c149b240e3afc208bcab379c6ff3cdddd78375d909701b4c4417c9d047b \
+        --control-plane --certificate-key 70565e20bc5aefef01669237fb4d55b1d95c9fa4d0fb239eb137e4499a62a844 \
     --apiserver-advertise-address $HOST_IP
 
 sudo systemctl enable configure-nlb
 sudo systemctl start configure-nlb
 
 # metrics
-kubeadm join 10.0.0.2:6443 --token 81yyjk.0jgq1pe0ad2e6i5c \
-        --discovery-token-ca-cert-hash sha256:bc20b702a242d514f5c470a1e2053eed477a2607d829e95de13d0e515be20158
+kubeadm join 10.0.0.9:6443 --token nhra5m.6x75d239o943tmxi \
+        --discovery-token-ca-cert-hash sha256:4e5b1c149b240e3afc208bcab379c6ff3cdddd78375d909701b4c4417c9d047b
+
+
 
 wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 sed -i 's/--metric-resolution=15s/--metric-resolution=15s\n        - --kubelet-insecure-tls/' components.yaml
@@ -92,41 +94,5 @@ kubectl apply -f components.yaml
 #  crictl ps | grep apiserver | awk '{print $1}' | xargs crictl logs -f
 #
 #  kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
-# 
-
-export IP_APISERVER_0=10.0.0.21
-cat <<EOF | sudo tee /etc/kubernetes/kubeadm-config.conf
-apiVersion: kubeadm.k8s.io/v1beta4
-kind: InitConfiguration
-localAPIEndpoint:
-  advertiseAddress: $IP_APISERVER_0
-  bindPort: 6443
----
-apiVersion: kubeadm.k8s.io/v1beta4
-kind: ClusterConfiguration
-kubernetesVersion: stable
-controlPlaneEndpoint: $IP_APISERVER_0:6443
-etcd:
-  external:
-    endpoints:
-      - https://$IP_ETCD_0:2379
-      - https://$IP_ETCD_1:2379
-      - https://$IP_ETCD_2:2379
-    caFile: /etc/kubernetes/pki/etcd/ca.crt
-    certFile: /etc/kubernetes/pki/apiserver-etcd-client.crt
-    keyFile: /etc/kubernetes/pki/apiserver-etcd-client.key
-networking:
-  podSubnet: 10.64.0.0/12
-controllerManager:
-  extraArgs:
-    - name: kube-api-qps
-      value: "16000"
-    - name: kube-api-burst
-      value: "24000"
-scheduler:
-  extraArgs:
-    - name: kube-api-qps
-      value: "16000"
-    - name: kube-api-burst
-      value: "24000"
-EOF
+#
+#  ip route delete local $IP_LB dev eth1 && systemctl stop configure-nlb

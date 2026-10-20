@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-export IP_APISERVER_0=10.0.0.16
-export IP_TURBO=10.0.0.15
+export IP_APISERVER_0=10.0.0.24
+export IP_TURBO=10.0.0.20
 
 mkdir -p /etc/kubernetes/pki/etcd
 scp -o "StrictHostKeyChecking=accept-new" root@$IP_TURBO:/etc/kubernetes/admin.conf /etc/kubernetes/admin.a.conf
@@ -18,3 +18,12 @@ cd turbokube-loadtest/turboctl
 go build
 
 # ./turboctl run basic -c 4 -n 1024
+
+# 1024 namespaces
+# 4 deployments per namespace
+# 8 vnodes per namespace
+# 32 pods per vnode
+
+# 8k nodes
+# 256k pods
+

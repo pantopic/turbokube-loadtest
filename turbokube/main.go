@@ -90,7 +90,6 @@ func main() {
 	}
 
 	if err := rootCmd.Execute(); err != nil && errors.Cause(err) != context.Canceled {
-		panic(err)
 		log.G(ctx).Fatal(err)
 	}
 }
